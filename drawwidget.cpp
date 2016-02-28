@@ -5,15 +5,15 @@
 DrawWidget::DrawWidget(QWidget *parent) :
     QWidget(parent)
 {
-    this->circle = new Circle(this);
+    controller = Controller::getInstance();
+    controller->setDrawWidget(this);
 }
 
 DrawWidget::~DrawWidget()
 {
-    delete this->circle;
 }
 
-void DrawWidget::paintEvent(QPaintEvent */*event*/)
+void DrawWidget::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
     QImage backBuffer(width(), height(), QImage::Format_RGB888);
@@ -24,11 +24,8 @@ void DrawWidget::paintEvent(QPaintEvent */*event*/)
         return;
     }
     memset(pubBuffer, 255, backBuffer.byteCount());
-    //
-    if (this->circle)
-    {
-        this->circle->draw(&backBuffer);
-    }
-    //
+
+    controller->drawCircle(&backBuffer);
+
     painter.drawImage(0,0, backBuffer);
 }

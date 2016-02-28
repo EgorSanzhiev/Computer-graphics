@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "drawwidget.h"
+#include "controlspanel.h"
 
 class MainWindow : public QMainWindow
 {
@@ -13,7 +14,12 @@ public:
     ~MainWindow();
 
 private:
+    QGroupBox *drawPanel;
+    ControlsPanel *controlsPanel;
     DrawWidget *drawWidget;
+    QSlider *sliderX;
+    QWidget *centralWidget;
+    void setupDrawPanel();
 };
 
 #endif // MAINWINDOW_H

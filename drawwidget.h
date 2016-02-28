@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "circle.h"
+#include "controller.h"
 
 class DrawWidget : public QWidget {
     Q_OBJECT
@@ -17,7 +18,7 @@ protected:
     void paintEvent(QPaintEvent *event);
 
 private:
-    Circle *circle;
+    Controller *controller;
 
 };
 
