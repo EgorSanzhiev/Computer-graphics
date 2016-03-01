@@ -35,10 +35,10 @@ void Circle::draw(QImage *pBackBuffer) {
         upperBorder = bottomBorder;
     }
 
-    for(int line = upperBorder; line <= bottomBorder; ++line) {
-        int cathetus = sqrt(this->r * this->r - (realY - line) * (realY - line));
-        int leftBorder = realX - cathetus;
-        int rightBorder = realX + cathetus;
+    for(int line = upperBorder; line <= bottomBorder - 1; ++line) {
+        double cathetus = sqrt(this->r * this->r - (realY - line) * (realY - line));
+        double leftBorder = (double) realX - cathetus;
+        double rightBorder = (double) realX + cathetus;
 
         if (leftBorder < 0) {
             leftBorder = 0;
@@ -52,11 +52,13 @@ void Circle::draw(QImage *pBackBuffer) {
             leftBorder = rightBorder;
         }
 
-        int offset = (line * pBackBuffer->bytesPerLine()) + leftBorder * 3 * sizeof(uchar);
+        int offset = (line * pBackBuffer->bytesPerLine()) + (int) leftBorder * 3 * sizeof(uchar);
 
         memset(buffer + offset, 0,
-               (rightBorder - leftBorder) * 3 * sizeof(uchar));
+               (int) (rightBorder - leftBorder) * 3 * sizeof(uchar));
     }
+
+    backBuffer = pBackBuffer;
 }
 
 void Circle::setX(int x) {
@@ -69,4 +71,8 @@ void Circle::setY(int y) {
 
 void Circle::setR(int r) {
     this->r = r;
+}
+
+void Circle::save(QString &path) {
+    backBuffer->save(path);
 }

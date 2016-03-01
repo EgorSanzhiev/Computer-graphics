@@ -1,4 +1,6 @@
 #include <QVBoxLayout>
+#include <QMenuBar>
+#include <QFileDialog>
 #include "mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -16,6 +18,13 @@ MainWindow::MainWindow(QWidget *parent)
     centralWidget->setLayout(grid);
 
     setCentralWidget(centralWidget);
+
+    saveFileAction = new QAction(tr("Save"), this);
+    saveFileAction->setShortcut(QKeySequence::Save);
+    connect(saveFileAction, SIGNAL(triggered(bool)), this, SLOT(saveFile()));
+
+    fileMenu = menuBar()->addMenu(tr("File"));
+    fileMenu->addAction(saveFileAction);
 
     resize(800, 600);
 }
@@ -35,4 +44,10 @@ void MainWindow::setupDrawPanel() {
     layout->addWidget(drawWidget);
 
     drawPanel->setLayout(layout);
+}
+
+void MainWindow::saveFile() {
+    QString filename = QFileDialog::getSaveFileName(this, tr("Choose file"), tr("/home/egorsanzhiev"), tr("Images (*.png)"));
+
+    Controller::getInstance()->saveImage(filename);
 }

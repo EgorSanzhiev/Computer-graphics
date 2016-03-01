@@ -16,16 +16,16 @@ DrawWidget::~DrawWidget()
 void DrawWidget::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    QImage backBuffer(width(), height(), QImage::Format_RGB888);
+    QImage *backBuffer = new QImage(width(), height(), QImage::Format_RGB888);
 
-    uchar* pubBuffer = backBuffer.bits();
+    uchar* pubBuffer = backBuffer->bits();
     if (!pubBuffer)
     {
         return;
     }
-    memset(pubBuffer, 255, backBuffer.byteCount());
+    memset(pubBuffer, 255, backBuffer->byteCount());
 
-    controller->drawCircle(&backBuffer);
+    controller->drawCircle(backBuffer);
 
-    painter.drawImage(0,0, backBuffer);
+    painter.drawImage(0,0, *backBuffer);
 }

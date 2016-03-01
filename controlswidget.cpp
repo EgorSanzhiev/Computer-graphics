@@ -43,9 +43,9 @@ ControlsWidget::ControlsWidget(Value v, QWidget *parent) : QWidget(parent) {
 
 
 ControlsWidget::~ControlsWidget() {
-//    delete slider;
-//    delete spinner;
-//    delete label;
+    delete slider;
+    delete spinner;
+    delete label;
 }
 
 

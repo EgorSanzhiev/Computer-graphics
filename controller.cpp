@@ -36,3 +36,7 @@ void Controller::setR(int r) {
     circle->setR(r);
     drawWidget->repaint();
 }
+
+void Controller::saveImage(QString &path) {
+    circle->save(path);
+}

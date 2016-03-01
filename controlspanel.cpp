@@ -22,8 +22,8 @@ ControlsPanel::ControlsPanel(QWidget *parent) : QGroupBox(parent) {
 }
 
 ControlsPanel::~ControlsPanel() {
-//    delete xControl;
-//    delete yControl;
-//    delete rControl;
-//    delete controller;
+    delete xControl;
+    delete yControl;
+    delete rControl;
+    delete controller;
 }

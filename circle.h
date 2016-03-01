@@ -8,11 +8,12 @@ class Circle {
 public:
     explicit Circle();
     void draw(QImage* pBackBuffer);
-    void repaint();
     void setX(int x);
     void setY(int y);
     void setR(int r);
+    void save(QString &path);
 private:
     int x, y, r;
+    QImage *backBuffer;
 };
 #endif // CIRCLE_H

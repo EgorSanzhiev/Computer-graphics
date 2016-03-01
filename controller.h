@@ -20,6 +20,7 @@ public slots:
 public:
     static Controller *getInstance();
     void drawCircle(QImage *buffer);
+    void saveImage(QString &path);
     void setDrawWidget(QWidget *drawWidget);
 };
 
