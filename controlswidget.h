@@ -10,20 +10,19 @@ class ControlsWidget : public QWidget {
     Q_OBJECT
 
 public:
-    enum Value {X, Y, R};
-    ControlsWidget(Value v, QWidget *parent = 0);
+    enum Type {X, Y, R};
+    ControlsWidget(Type v, QWidget *parent = 0);
     ~ControlsWidget();
+    void setValue(int v);
 
 signals:
-    void valueChanged(int value);
-//public slots:
-//    void change(int value);
+    void valueChanged(int type);
 
 private:
     QSlider *slider;
     QSpinBox *spinner;
     QLabel *label;
-    Value value;
+    Type type;
 };
 
 #endif // CONTROLSWIDGET

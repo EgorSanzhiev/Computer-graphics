@@ -1,8 +1,8 @@
 #include "controlswidget.h"
 #include <QGridLayout>
 
-ControlsWidget::ControlsWidget(Value v, QWidget *parent) : QWidget(parent) {
-    value = v;
+ControlsWidget::ControlsWidget(Type v, QWidget *parent) : QWidget(parent) {
+    type = v;
 
     slider = new QSlider(Qt::Orientation::Horizontal, this);
     spinner = new QSpinBox(this);
@@ -22,7 +22,7 @@ ControlsWidget::ControlsWidget(Value v, QWidget *parent) : QWidget(parent) {
 
     connect(slider, SIGNAL(valueChanged(int)), this, SIGNAL(valueChanged(int)));
 
-    switch (value) {
+    switch (type) {
     case X:
         label->setText("Position X");
         slider->setRange(-500, 500);
@@ -41,6 +41,10 @@ ControlsWidget::ControlsWidget(Value v, QWidget *parent) : QWidget(parent) {
     }
 }
 
+void ControlsWidget::setValue(int v) {
+    slider->setValue(v);
+    spinner->setValue(v);
+}
 
 ControlsWidget::~ControlsWidget() {
     delete slider;

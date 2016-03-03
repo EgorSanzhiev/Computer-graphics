@@ -23,8 +23,13 @@ MainWindow::MainWindow(QWidget *parent)
     saveFileAction->setShortcut(QKeySequence::Save);
     connect(saveFileAction, SIGNAL(triggered(bool)), this, SLOT(saveFile()));
 
+    loadFileAction = new QAction(tr("Load"), this);
+    loadFileAction->setShortcut(QKeySequence::Open);
+    connect(loadFileAction, SIGNAL(triggered(bool)), this, SLOT(loadSettings()));
+
     fileMenu = menuBar()->addMenu(tr("File"));
     fileMenu->addAction(saveFileAction);
+    fileMenu->addAction(loadFileAction);
 
     resize(800, 600);
 }
@@ -49,5 +54,11 @@ void MainWindow::setupDrawPanel() {
 void MainWindow::saveFile() {
     QString filename = QFileDialog::getSaveFileName(this, tr("Choose file"), tr("/home/egorsanzhiev"), tr("Images (*.png)"));
 
-    Controller::getInstance()->saveImage(filename);
+    drawWidget->saveImage(filename);
+}
+
+void MainWindow::loadSettings() {
+    QString filename = QFileDialog::getOpenFileName(this, tr("Choose file"), tr("/home/egorsanzhiev"), tr("Text (*.txt)"));
+
+    Controller::getInstance()->loadJSONSettings(filename);
 }

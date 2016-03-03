@@ -17,6 +17,9 @@ signals:
     void yChanged(int y);
     void rChanged(int r);
 
+private slots:
+    void changePositions(int x, int y, int r);
+
 private:
     ControlsWidget *xControl;
     ControlsWidget *yControl;

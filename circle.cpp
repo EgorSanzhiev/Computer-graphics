@@ -1,10 +1,10 @@
 #include "circle.h"
 #include <math.h>
 
-Circle::Circle() {
-    this->x = 0;
-    this->y = 0;
-    this->r = 20;
+Circle::Circle(int x, int y, int r) {
+    this->x = x;
+    this->y = y;
+    this->r = r;
 }
 
 void Circle::draw(QImage *pBackBuffer) {
@@ -58,7 +58,6 @@ void Circle::draw(QImage *pBackBuffer) {
                (int) (rightBorder - leftBorder) * 3 * sizeof(uchar));
     }
 
-    backBuffer = pBackBuffer;
 }
 
 void Circle::setX(int x) {
@@ -73,6 +72,3 @@ void Circle::setR(int r) {
     this->r = r;
 }
 
-void Circle::save(QString &path) {
-    backBuffer->save(path);
-}

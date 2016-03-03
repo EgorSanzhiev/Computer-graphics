@@ -16,7 +16,7 @@ DrawWidget::~DrawWidget()
 void DrawWidget::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    QImage *backBuffer = new QImage(width(), height(), QImage::Format_RGB888);
+    backBuffer = new QImage(width(), height(), QImage::Format_RGB888);
 
     uchar* pubBuffer = backBuffer->bits();
     if (!pubBuffer)
@@ -28,4 +28,8 @@ void DrawWidget::paintEvent(QPaintEvent *event)
     controller->drawCircle(backBuffer);
 
     painter.drawImage(0,0, *backBuffer);
+}
+
+void DrawWidget::saveImage(QString &filename) {
+    backBuffer->save(filename);
 }

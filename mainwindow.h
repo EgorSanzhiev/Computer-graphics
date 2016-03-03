@@ -15,6 +15,7 @@ public:
 
 private slots:
     void saveFile();
+    void loadSettings();
 
 private:
     QGroupBox *drawPanel;
@@ -23,6 +24,7 @@ private:
     QSlider *sliderX;
     QWidget *centralWidget;
     QMenu *fileMenu;
+    QAction *loadFileAction;
     QAction *saveFileAction;
 
     void setupDrawPanel();

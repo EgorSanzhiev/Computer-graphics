@@ -6,14 +6,12 @@
 
 class Circle {
 public:
-    explicit Circle();
+    Circle(int x = 0, int y = 0, int r = 20);
     void draw(QImage* pBackBuffer);
     void setX(int x);
     void setY(int y);
     void setR(int r);
-    void save(QString &path);
 private:
     int x, y, r;
-    QImage *backBuffer;
 };
 #endif // CIRCLE_H

@@ -10,6 +10,8 @@ class DrawWidget : public QWidget {
 public:
     explicit DrawWidget(QWidget *parent = 0);
     ~DrawWidget();
+
+    void saveImage(QString &filename);
 signals:
 
 public slots:
@@ -19,6 +21,7 @@ protected:
 
 private:
     Controller *controller;
+    QImage *backBuffer;
 
 };
 

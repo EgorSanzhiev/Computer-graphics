@@ -1,4 +1,8 @@
 #include "controller.h"
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 
 Controller* Controller::instance = NULL;
 
@@ -37,6 +41,34 @@ void Controller::setR(int r) {
     drawWidget->repaint();
 }
 
-void Controller::saveImage(QString &path) {
-    circle->save(path);
+void Controller::loadJSONSettings(QString &filename) {
+    QFile settingsFile(filename);
+
+    QString jsonText;
+
+    settingsFile.open(QIODevice::ReadOnly | QIODevice::Text);
+
+    jsonText = settingsFile.readAll();
+
+    QJsonDocument document = QJsonDocument::fromJson(jsonText.toUtf8());
+
+    QJsonObject settings = document.object();
+
+    QJsonObject circleSettings = settings[tr("circle")].toObject();
+
+    QJsonValue r = circleSettings[tr("R")];
+
+    QJsonValue position = circleSettings[tr("position")];
+
+    QJsonValue x = position.toObject()[tr("x")];
+
+    QJsonValue y = position.toObject()[tr("y")];
+
+    circle->setR(r.toInt(20));
+    circle->setX(x.toInt());
+    circle->setY(y.toInt());
+
+    emit configLoaded(x.toInt(), y.toInt(), r.toInt(20));
+
+    drawWidget->update();
 }
