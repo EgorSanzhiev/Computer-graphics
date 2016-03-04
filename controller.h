@@ -9,6 +9,7 @@ class Controller : public QObject {
 private:
     Circle *circle;
     QWidget *drawWidget;
+    QImage *backBuffer;
     static Controller *instance;
     Controller(QObject *parent = 0);
 
@@ -21,6 +22,8 @@ public slots:
     void setR(int r);
 
 public:
+    class ParserException{};
+
     static Controller *getInstance();
     void drawCircle(QImage *buffer);
     void saveImage(QString &path);

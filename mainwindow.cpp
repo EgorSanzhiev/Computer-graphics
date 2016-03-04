@@ -1,6 +1,7 @@
 #include <QVBoxLayout>
 #include <QMenuBar>
 #include <QFileDialog>
+#include <QErrorMessage>
 #include "mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -52,13 +53,18 @@ void MainWindow::setupDrawPanel() {
 }
 
 void MainWindow::saveFile() {
-    QString filename = QFileDialog::getSaveFileName(this, tr("Choose file"), tr("/home/egorsanzhiev"), tr("Images (*.png)"));
+    QString filename = QFileDialog::getSaveFileName(this, tr("Choose file"), "/home/egorsanzhiev", tr("Images (*.png)"));
 
     drawWidget->saveImage(filename);
 }
 
 void MainWindow::loadSettings() {
-    QString filename = QFileDialog::getOpenFileName(this, tr("Choose file"), tr("/home/egorsanzhiev"), tr("Text (*.txt)"));
+    QString filename = QFileDialog::getOpenFileName(this, tr("Choose file"), "/home/egorsanzhiev", tr("Text (*.txt)"));
 
-    Controller::getInstance()->loadJSONSettings(filename);
+    try {
+        Controller::getInstance()->loadJSONSettings(filename);
+    } catch (const Controller::ParserException &e) {
+        QErrorMessage *errMsg = new QErrorMessage(this);
+        errMsg->showMessage(tr("Error in the settings file"));
+    }
 }

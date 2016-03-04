@@ -8,6 +8,8 @@ Controller* Controller::instance = NULL;
 
 Controller::Controller(QObject *parent) : QObject(parent) {
     circle = new Circle();
+    drawWidget = NULL;
+    backBuffer = NULL;
 }
 
 Controller* Controller::getInstance() {
@@ -41,6 +43,10 @@ void Controller::setR(int r) {
     drawWidget->repaint();
 }
 
+void Controller::saveImage(QString &path) {
+    backBuffer->save(path);
+}
+
 void Controller::loadJSONSettings(QString &filename) {
     QFile settingsFile(filename);
 
@@ -54,21 +60,57 @@ void Controller::loadJSONSettings(QString &filename) {
 
     QJsonObject settings = document.object();
 
-    QJsonObject circleSettings = settings[tr("circle")].toObject();
+    QJsonObject circleSettings = settings["circle"].toObject();
 
-    QJsonValue r = circleSettings[tr("R")];
+    QJsonObject panelSettings = settings["panel"].toObject();
 
-    QJsonValue position = circleSettings[tr("position")];
+    QJsonValue rParsed = circleSettings["R"];
 
-    QJsonValue x = position.toObject()[tr("x")];
+    QJsonValue position = circleSettings["position"];
 
-    QJsonValue y = position.toObject()[tr("y")];
+    QJsonValue xParsed = position.toObject()["x"];
 
-    circle->setR(r.toInt(20));
-    circle->setX(x.toInt());
-    circle->setY(y.toInt());
+    QJsonValue yParsed = position.toObject()["y"];
 
-    emit configLoaded(x.toInt(), y.toInt(), r.toInt(20));
+    QJsonValue panelSize = panelSettings["size"];
 
-    drawWidget->update();
+    QJsonValue xPanel = panelSize.toObject()["x"];
+
+    QJsonValue yPanel = panelSize.toObject()["y"];
+
+    if (!rParsed.isDouble() || !xParsed.isDouble() || !yParsed.isDouble()) {
+        throw Controller::ParserException();
+    }
+
+    int x = xParsed.toInt();
+    int y = yParsed.toInt();
+    int r = rParsed.toInt(20);
+
+    if (r < 0) {
+        throw Controller::ParserException();
+    }
+
+    circle->setR(r);
+    circle->setX(x);
+    circle->setY(y);
+
+    emit configLoaded(x, y, r);
+
+    if (drawWidget) {
+        drawWidget->update();
+    } else {
+        if (!xPanel.isDouble() || !yPanel.isDouble()) {
+            throw Controller::ParserException();
+        }
+
+        if (xPanel.toInt() <= 0 || yPanel.toInt() <= 0) {
+            throw Controller::ParserException();
+        }
+
+        backBuffer = new QImage(xPanel.toInt(), yPanel.toInt(), QImage::Format_RGB888);
+
+        memset(backBuffer->bits(), 255, backBuffer->byteCount());
+
+        drawCircle(backBuffer);
+    }
 }
