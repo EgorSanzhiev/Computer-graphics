@@ -8,13 +8,13 @@ class Controller : public QObject {
     Q_OBJECT
 private:
     Circle *circle;
-    QWidget *drawWidget;
-    QImage *backBuffer;
     static Controller *instance;
     Controller(QObject *parent = 0);
 
 signals:
+    void circleUpdated();
     void configLoaded(int x, int y, int r);
+    void panelLoaded(int xPanel, int yPanel);
 
 public slots:
     void setX(int x);
@@ -27,7 +27,6 @@ public:
     static Controller *getInstance();
     void drawCircle(QImage *buffer);
     void saveImage(QString &path);
-    void setDrawWidget(QWidget *drawWidget);
     void loadJSONSettings(QString &filename);
 };
 

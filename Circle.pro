@@ -20,11 +20,13 @@ SOURCES += main.cpp\
     drawwidget.cpp \
     controlswidget.cpp \
     controlspanel.cpp \
-    controller.cpp
+    controller.cpp \
+    consolemode.cpp
 
 HEADERS  += mainwindow.h \
     circle.h \
     drawwidget.h \
     controlspanel.h \
     controlswidget.h \
-    controller.h
+    controller.h \
+    consolemode.h

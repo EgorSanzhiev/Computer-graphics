@@ -1,10 +1,13 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include <iostream>
+#include "consolemode.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    std::string error = "Wrong arguments! Usage: <settings file (.txt)> <output file (.png)>";
 
     if (argc == 1) {
         MainWindow w;
@@ -12,29 +15,12 @@ int main(int argc, char *argv[])
 
         return a.exec();
     } else if (argc == 3){
-        QString settingsFile(argv[1]);
-        QString outputFile(argv[2]);
+        ConsoleMode console;
 
-        std::string error = "Wrong arguments! Usage: <settings file (.txt)> <output file (.png)>";
+        return console.runFromConsole(argc, argv);
+    } else {
+        std::cerr << error << std::endl;
 
-        if (!settingsFile.endsWith(".txt", Qt::CaseInsensitive)
-                || !outputFile.endsWith(".png", Qt::CaseInsensitive)) {
-
-            std::cerr << error << std::endl;
-
-            return -1;
-        }
-
-        Controller *controller = Controller::getInstance();
-
-        try {
-            controller->loadJSONSettings(settingsFile);
-        } catch (Controller::ParserException &e) {
-            std::cerr << "Error in settings file" << std::endl;
-
-            return -1;
-        }
-
-        controller->saveImage(outputFile);
+        return -1;
     }
 }
