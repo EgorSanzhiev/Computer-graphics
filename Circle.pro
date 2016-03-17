@@ -29,4 +29,5 @@ HEADERS  += mainwindow.h \
     controlspanel.h \
     controlswidget.h \
     controller.h \
-    consolemode.h
+    consolemode.h \
+    iserializable.h

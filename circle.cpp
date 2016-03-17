@@ -72,3 +72,57 @@ void Circle::setR(int r) {
     this->r = r;
 }
 
+int Circle::getR() {
+    return r;
+}
+
+int Circle::getX() {
+    return x;
+}
+
+int Circle::getY() {
+    return y;
+}
+
+QJsonObject Circle::serialize() {
+    QJsonObject settings;
+    QJsonObject circle;
+    QJsonObject position;
+
+    position.insert("x", QJsonValue(x));
+    position.insert("y", QJsonValue(y));
+
+    circle.insert("position", QJsonValue(position));
+    circle.insert("R", QJsonValue(r));
+
+    settings.insert("circle", circle);
+
+    return settings;
+}
+
+void Circle::read(QJsonObject settings) {
+    QJsonValue rParsed = settings["R"];
+
+    QJsonValue position = settings["position"];
+
+    QJsonValue xParsed = position.toObject()["x"];
+
+    QJsonValue yParsed = position.toObject()["y"];
+
+    if (!rParsed.isDouble() || !xParsed.isDouble() || !yParsed.isDouble()) {
+        throw ISerializable::ParserException();
+    }
+
+    int x = xParsed.toInt();
+    int y = yParsed.toInt();
+    int r = rParsed.toInt(20);
+
+    if (r < 0) {
+        throw ISerializable::ParserException();
+    }
+
+    this->x = x;
+    this->y = y;
+    this->r = r;
+}
+

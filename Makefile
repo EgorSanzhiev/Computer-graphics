@@ -216,7 +216,8 @@ DIST          = ../../../Qt/5.5/gcc_64/mkspecs/features/spec_pre.prf \
 		controlspanel.h \
 		controlswidget.h \
 		controller.h \
-		consolemode.h main.cpp \
+		consolemode.h \
+		iserializable.h main.cpp \
 		mainwindow.cpp \
 		circle.cpp \
 		drawwidget.cpp \
@@ -547,7 +548,7 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents mainwindow.h circle.h drawwidget.h controlspanel.h controlswidget.h controller.h consolemode.h $(DISTDIR)/
+	$(COPY_FILE) --parents mainwindow.h circle.h drawwidget.h controlspanel.h controlswidget.h controller.h consolemode.h iserializable.h $(DISTDIR)/
 	$(COPY_FILE) --parents main.cpp mainwindow.cpp circle.cpp drawwidget.cpp controlswidget.cpp controlspanel.cpp controller.cpp consolemode.cpp $(DISTDIR)/
 
 
@@ -684,6 +685,10 @@ moc_mainwindow.cpp: ../../../Qt/5.5/gcc_64/include/QtWidgets/QMainWindow \
 		circle.h \
 		../../../Qt/5.5/gcc_64/include/QtCore/QObject \
 		../../../Qt/5.5/gcc_64/include/QtGui/QImage \
+		iserializable.h \
+		../../../Qt/5.5/gcc_64/include/QtCore/QJsonObject \
+		../../../Qt/5.5/gcc_64/include/QtCore/qjsonobject.h \
+		../../../Qt/5.5/gcc_64/include/QtCore/qjsonvalue.h \
 		controller.h \
 		controlspanel.h \
 		../../../Qt/5.5/gcc_64/include/QtWidgets/QGroupBox \
@@ -808,6 +813,10 @@ moc_drawwidget.cpp: ../../../Qt/5.5/gcc_64/include/QtWidgets/QWidget \
 		circle.h \
 		../../../Qt/5.5/gcc_64/include/QtCore/QObject \
 		../../../Qt/5.5/gcc_64/include/QtGui/QImage \
+		iserializable.h \
+		../../../Qt/5.5/gcc_64/include/QtCore/QJsonObject \
+		../../../Qt/5.5/gcc_64/include/QtCore/qjsonobject.h \
+		../../../Qt/5.5/gcc_64/include/QtCore/qjsonvalue.h \
 		controller.h \
 		drawwidget.h
 	/home/egorsanzhiev/Qt/5.5/gcc_64/bin/moc $(DEFINES) -I/home/egorsanzhiev/Qt/5.5/gcc_64/mkspecs/linux-g++ -I'/home/egorsanzhiev/Study/Computer graphics/Circle' -I/home/egorsanzhiev/Qt/5.5/gcc_64/include -I/home/egorsanzhiev/Qt/5.5/gcc_64/include/QtWidgets -I/home/egorsanzhiev/Qt/5.5/gcc_64/include/QtGui -I/home/egorsanzhiev/Qt/5.5/gcc_64/include/QtCore drawwidget.h -o moc_drawwidget.cpp
@@ -932,6 +941,10 @@ moc_controlspanel.cpp: ../../../Qt/5.5/gcc_64/include/QtWidgets/QGroupBox \
 		circle.h \
 		../../../Qt/5.5/gcc_64/include/QtCore/QObject \
 		../../../Qt/5.5/gcc_64/include/QtGui/QImage \
+		iserializable.h \
+		../../../Qt/5.5/gcc_64/include/QtCore/QJsonObject \
+		../../../Qt/5.5/gcc_64/include/QtCore/qjsonobject.h \
+		../../../Qt/5.5/gcc_64/include/QtCore/qjsonvalue.h \
 		controlspanel.h
 	/home/egorsanzhiev/Qt/5.5/gcc_64/bin/moc $(DEFINES) -I/home/egorsanzhiev/Qt/5.5/gcc_64/mkspecs/linux-g++ -I'/home/egorsanzhiev/Study/Computer graphics/Circle' -I/home/egorsanzhiev/Qt/5.5/gcc_64/include -I/home/egorsanzhiev/Qt/5.5/gcc_64/include/QtWidgets -I/home/egorsanzhiev/Qt/5.5/gcc_64/include/QtGui -I/home/egorsanzhiev/Qt/5.5/gcc_64/include/QtCore controlspanel.h -o moc_controlspanel.cpp
 
@@ -1126,6 +1139,10 @@ moc_controller.cpp: circle.h \
 		../../../Qt/5.5/gcc_64/include/QtGui/qpaintdevice.h \
 		../../../Qt/5.5/gcc_64/include/QtGui/qrgb.h \
 		../../../Qt/5.5/gcc_64/include/QtGui/qpixelformat.h \
+		iserializable.h \
+		../../../Qt/5.5/gcc_64/include/QtCore/QJsonObject \
+		../../../Qt/5.5/gcc_64/include/QtCore/qjsonobject.h \
+		../../../Qt/5.5/gcc_64/include/QtCore/qjsonvalue.h \
 		../../../Qt/5.5/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt/5.5/gcc_64/include/QtWidgets/qwidget.h \
 		../../../Qt/5.5/gcc_64/include/QtGui/qpalette.h \
@@ -1235,6 +1252,10 @@ moc_consolemode.cpp: ../../../Qt/5.5/gcc_64/include/QtCore/QObject \
 		../../../Qt/5.5/gcc_64/include/QtGui/qpaintdevice.h \
 		../../../Qt/5.5/gcc_64/include/QtGui/qrgb.h \
 		../../../Qt/5.5/gcc_64/include/QtGui/qpixelformat.h \
+		iserializable.h \
+		../../../Qt/5.5/gcc_64/include/QtCore/QJsonObject \
+		../../../Qt/5.5/gcc_64/include/QtCore/qjsonobject.h \
+		../../../Qt/5.5/gcc_64/include/QtCore/qjsonvalue.h \
 		../../../Qt/5.5/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt/5.5/gcc_64/include/QtWidgets/qwidget.h \
 		../../../Qt/5.5/gcc_64/include/QtGui/qpalette.h \
@@ -1393,6 +1414,10 @@ main.o: main.cpp mainwindow.h \
 		circle.h \
 		../../../Qt/5.5/gcc_64/include/QtCore/QObject \
 		../../../Qt/5.5/gcc_64/include/QtGui/QImage \
+		iserializable.h \
+		../../../Qt/5.5/gcc_64/include/QtCore/QJsonObject \
+		../../../Qt/5.5/gcc_64/include/QtCore/qjsonobject.h \
+		../../../Qt/5.5/gcc_64/include/QtCore/qjsonvalue.h \
 		controller.h \
 		controlspanel.h \
 		../../../Qt/5.5/gcc_64/include/QtWidgets/QGroupBox \
@@ -1547,6 +1572,10 @@ mainwindow.o: mainwindow.cpp ../../../Qt/5.5/gcc_64/include/QtWidgets/QVBoxLayou
 		circle.h \
 		../../../Qt/5.5/gcc_64/include/QtCore/QObject \
 		../../../Qt/5.5/gcc_64/include/QtGui/QImage \
+		iserializable.h \
+		../../../Qt/5.5/gcc_64/include/QtCore/QJsonObject \
+		../../../Qt/5.5/gcc_64/include/QtCore/qjsonobject.h \
+		../../../Qt/5.5/gcc_64/include/QtCore/qjsonvalue.h \
 		controller.h \
 		controlspanel.h \
 		../../../Qt/5.5/gcc_64/include/QtWidgets/QGroupBox \
@@ -1639,7 +1668,11 @@ circle.o: circle.cpp circle.h \
 		../../../Qt/5.5/gcc_64/include/QtGui/qpainterpath.h \
 		../../../Qt/5.5/gcc_64/include/QtGui/qpaintdevice.h \
 		../../../Qt/5.5/gcc_64/include/QtGui/qrgb.h \
-		../../../Qt/5.5/gcc_64/include/QtGui/qpixelformat.h
+		../../../Qt/5.5/gcc_64/include/QtGui/qpixelformat.h \
+		iserializable.h \
+		../../../Qt/5.5/gcc_64/include/QtCore/QJsonObject \
+		../../../Qt/5.5/gcc_64/include/QtCore/qjsonobject.h \
+		../../../Qt/5.5/gcc_64/include/QtCore/qjsonvalue.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o circle.o circle.cpp
 
 drawwidget.o: drawwidget.cpp drawwidget.h \
@@ -1748,6 +1781,10 @@ drawwidget.o: drawwidget.cpp drawwidget.h \
 		circle.h \
 		../../../Qt/5.5/gcc_64/include/QtCore/QObject \
 		../../../Qt/5.5/gcc_64/include/QtGui/QImage \
+		iserializable.h \
+		../../../Qt/5.5/gcc_64/include/QtCore/QJsonObject \
+		../../../Qt/5.5/gcc_64/include/QtCore/qjsonobject.h \
+		../../../Qt/5.5/gcc_64/include/QtCore/qjsonvalue.h \
 		controller.h \
 		../../../Qt/5.5/gcc_64/include/QtGui/QPainter \
 		../../../Qt/5.5/gcc_64/include/QtGui/qpainter.h \
@@ -2001,7 +2038,11 @@ controlspanel.o: controlspanel.cpp ../../../Qt/5.5/gcc_64/include/QtWidgets/QBox
 		controller.h \
 		circle.h \
 		../../../Qt/5.5/gcc_64/include/QtCore/QObject \
-		../../../Qt/5.5/gcc_64/include/QtGui/QImage
+		../../../Qt/5.5/gcc_64/include/QtGui/QImage \
+		iserializable.h \
+		../../../Qt/5.5/gcc_64/include/QtCore/QJsonObject \
+		../../../Qt/5.5/gcc_64/include/QtCore/qjsonobject.h \
+		../../../Qt/5.5/gcc_64/include/QtCore/qjsonvalue.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o controlspanel.o controlspanel.cpp
 
 controller.o: controller.cpp controller.h \
@@ -2080,6 +2121,10 @@ controller.o: controller.cpp controller.h \
 		../../../Qt/5.5/gcc_64/include/QtGui/qpaintdevice.h \
 		../../../Qt/5.5/gcc_64/include/QtGui/qrgb.h \
 		../../../Qt/5.5/gcc_64/include/QtGui/qpixelformat.h \
+		iserializable.h \
+		../../../Qt/5.5/gcc_64/include/QtCore/QJsonObject \
+		../../../Qt/5.5/gcc_64/include/QtCore/qjsonobject.h \
+		../../../Qt/5.5/gcc_64/include/QtCore/qjsonvalue.h \
 		../../../Qt/5.5/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt/5.5/gcc_64/include/QtWidgets/qwidget.h \
 		../../../Qt/5.5/gcc_64/include/QtGui/qpalette.h \
@@ -2113,9 +2158,6 @@ controller.o: controller.cpp controller.h \
 		../../../Qt/5.5/gcc_64/include/QtCore/QFile \
 		../../../Qt/5.5/gcc_64/include/QtCore/QJsonDocument \
 		../../../Qt/5.5/gcc_64/include/QtCore/qjsondocument.h \
-		../../../Qt/5.5/gcc_64/include/QtCore/qjsonvalue.h \
-		../../../Qt/5.5/gcc_64/include/QtCore/QJsonObject \
-		../../../Qt/5.5/gcc_64/include/QtCore/qjsonobject.h \
 		../../../Qt/5.5/gcc_64/include/QtCore/QJsonArray \
 		../../../Qt/5.5/gcc_64/include/QtCore/qjsonarray.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o controller.o controller.cpp
@@ -2197,6 +2239,10 @@ consolemode.o: consolemode.cpp consolemode.h \
 		../../../Qt/5.5/gcc_64/include/QtGui/qpaintdevice.h \
 		../../../Qt/5.5/gcc_64/include/QtGui/qrgb.h \
 		../../../Qt/5.5/gcc_64/include/QtGui/qpixelformat.h \
+		iserializable.h \
+		../../../Qt/5.5/gcc_64/include/QtCore/QJsonObject \
+		../../../Qt/5.5/gcc_64/include/QtCore/qjsonobject.h \
+		../../../Qt/5.5/gcc_64/include/QtCore/qjsonvalue.h \
 		../../../Qt/5.5/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt/5.5/gcc_64/include/QtWidgets/qwidget.h \
 		../../../Qt/5.5/gcc_64/include/QtGui/qpalette.h \

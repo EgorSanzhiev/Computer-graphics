@@ -41,6 +41,10 @@ void Controller::setR(int r) {
 }
 
 void Controller::loadJSONSettings(QString &filename) {
+    if (!filename.endsWith(".json") && !filename.isEmpty()) {
+        throw ISerializable::ParserException();
+    }
+
     QFile settingsFile(filename);
 
     QString jsonText;
@@ -57,37 +61,15 @@ void Controller::loadJSONSettings(QString &filename) {
 
     QJsonValue panelSettings = settings["panel"];
 
-    QJsonValue rParsed = circleSettings.toObject()["R"];
-
-    QJsonValue position = circleSettings.toObject()["position"];
-
-    QJsonValue xParsed = position.toObject()["x"];
-
-    QJsonValue yParsed = position.toObject()["y"];
-
     QJsonValue panelSize = panelSettings.toObject()["size"];
 
     QJsonValue xPanel = panelSize.toObject()["x"];
 
     QJsonValue yPanel = panelSize.toObject()["y"];
 
-    if (!rParsed.isDouble() || !xParsed.isDouble() || !yParsed.isDouble()) {
-        throw Controller::ParserException();
-    }
+    circle->read(circleSettings.toObject());
 
-    int x = xParsed.toInt();
-    int y = yParsed.toInt();
-    int r = rParsed.toInt(20);
-
-    if (r < 0) {
-        throw Controller::ParserException();
-    }
-
-    circle->setR(r);
-    circle->setX(x);
-    circle->setY(y);
-
-    emit configLoaded(x, y, r);
+    emit configLoaded(circle->getX(), circle->getY(), circle->getR());
 
     emit circleUpdated();
 
@@ -96,12 +78,28 @@ void Controller::loadJSONSettings(QString &filename) {
     }
 
     if (!xPanel.isDouble() || !yPanel.isDouble()) {
-        throw Controller::ParserException();
+        throw ISerializable::ParserException();
     }
 
     if (xPanel.toInt() <= 0 || yPanel.toInt() <= 0) {
-        throw Controller::ParserException();
+        throw ISerializable::ParserException();
     }
 
     emit panelLoaded(xPanel.toInt(), yPanel.toInt());
+}
+
+void Controller::saveJSONSettings(QString &filename) {
+    if (!filename.endsWith(".json") && !filename.isEmpty()) {
+        throw ISerializable::ParserException();
+    }
+
+    QFile settingsFile(filename);
+
+    settingsFile.open(QIODevice::WriteOnly | QIODevice::Text);
+
+    QJsonObject settings = circle->serialize();
+
+    QJsonDocument settingsDoc(settings);
+
+    settingsFile.write(settingsDoc.toJson());
 }

@@ -53,17 +53,17 @@ void MainWindow::setupDrawPanel() {
 }
 
 void MainWindow::saveFile() {
-    QString filename = QFileDialog::getSaveFileName(this, tr("Choose file"), "/home/egorsanzhiev", tr("Images (*.png)"));
+    QString filename = QFileDialog::getSaveFileName(this, tr("Choose file"), "/home/egorsanzhiev", tr("JSON files (*.json)"));
 
-    drawWidget->saveImage(filename);
+    Controller::getInstance()->saveJSONSettings(filename);
 }
 
 void MainWindow::loadSettings() {
-    QString filename = QFileDialog::getOpenFileName(this, tr("Choose file"), "/home/egorsanzhiev", tr("Text (*.txt)"));
+    QString filename = QFileDialog::getOpenFileName(this, tr("Choose file"), "/home/egorsanzhiev", tr("JSON files (*.json)"));
 
     try {
         Controller::getInstance()->loadJSONSettings(filename);
-    } catch (const Controller::ParserException &e) {
+    } catch (ISerializable::ParserException &e) {
         QErrorMessage *errMsg = new QErrorMessage(this);
         errMsg->showMessage(tr("Error in the settings file"));
     }

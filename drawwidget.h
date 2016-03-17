@@ -11,7 +11,6 @@ public:
     explicit DrawWidget(QWidget *parent = 0);
     ~DrawWidget();
 
-    void saveImage(QString &filename);
 signals:
 
 public slots:

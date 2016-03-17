@@ -19,24 +19,14 @@ ConsoleMode::~ConsoleMode() {
 }
 
 int ConsoleMode::runFromConsole(int argc, char *argv[]) {
-    std::string error = "Wrong arguments! Usage: <settings file (.txt)> <output file (.png)>";
-
     QString settingsFile(argv[1]);
     QString outputFile(argv[2]);
-
-    if (!settingsFile.endsWith(".txt", Qt::CaseInsensitive)
-            || !outputFile.endsWith(".png", Qt::CaseInsensitive)) {
-
-        std::cerr << error << std::endl;
-
-        return -1;
-    }
 
     Controller *controller = Controller::getInstance();
 
     try {
         controller->loadJSONSettings(settingsFile);
-    } catch (Controller::ParserException &e) {
+    } catch (ISerializable::ParserException &e) {
         std::cerr << "Error in settings file" << std::endl;
 
         return -1;
@@ -44,7 +34,10 @@ int ConsoleMode::runFromConsole(int argc, char *argv[]) {
 
     controller->drawCircle(image);
 
-    image->save(outputFile);
+    if (!image->save(outputFile)) {
+        std::cerr << "Couldn't save image!" << std::endl;
+        return -1;
+    }
 
     return 0;
 }

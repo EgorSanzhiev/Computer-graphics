@@ -31,7 +31,3 @@ void DrawWidget::paintEvent(QPaintEvent *event)
 
     painter.drawImage(0,0, *backBuffer);
 }
-
-void DrawWidget::saveImage(QString &filename) {
-    backBuffer->save(filename);
-}
