@@ -1,7 +1,7 @@
 #include "circle.h"
 #include <math.h>
 
-Circle::Circle(int x, int y, int r) {
+Circle::Circle(int x, int y, int r) : QObject() {
     this->x = x;
     this->y = y;
     this->r = r;
@@ -72,18 +72,6 @@ void Circle::setR(int r) {
     this->r = r;
 }
 
-int Circle::getR() {
-    return r;
-}
-
-int Circle::getX() {
-    return x;
-}
-
-int Circle::getY() {
-    return y;
-}
-
 QJsonObject Circle::serialize() {
     QJsonObject settings;
     QJsonObject circle;
@@ -124,5 +112,7 @@ void Circle::read(QJsonObject settings) {
     this->x = x;
     this->y = y;
     this->r = r;
+
+    emit settingsLoaded(x, y, r);
 }
 

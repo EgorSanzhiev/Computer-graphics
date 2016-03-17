@@ -8,6 +8,7 @@ Controller* Controller::instance = NULL;
 
 Controller::Controller(QObject *parent) : QObject(parent) {
     circle = new Circle();
+    connect(circle, SIGNAL(settingsLoaded(int,int,int)), this, SIGNAL(configLoaded(int,int,int)));
 }
 
 Controller* Controller::getInstance() {
@@ -68,8 +69,6 @@ void Controller::loadJSONSettings(QString &filename) {
     QJsonValue yPanel = panelSize.toObject()["y"];
 
     circle->read(circleSettings.toObject());
-
-    emit configLoaded(circle->getX(), circle->getY(), circle->getR());
 
     emit circleUpdated();
 

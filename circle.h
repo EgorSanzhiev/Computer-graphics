@@ -5,19 +5,18 @@
 #include <QImage>
 #include <iserializable.h>
 
-class Circle : public ISerializable {
+class Circle : public QObject, public ISerializable {
+    Q_OBJECT
+signals:
+    void settingsLoaded(int x, int y, int r);
+
 public:
     Circle(int x = 0, int y = 0, int r = 20);
     void draw(QImage* pBackBuffer);
 
     void setX(int x);
-    int getX();
-
     void setY(int y);
-    int getY();
-
     void setR(int r);
-    int getR();
 
     virtual void read(QJsonObject settings);
     virtual QJsonObject serialize();
