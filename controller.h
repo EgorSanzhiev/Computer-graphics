@@ -26,7 +26,8 @@ public:
 
     static Controller *getInstance();
     void drawCircle(QImage *buffer);
-    void loadJSONSettings(QString &filename);
+    void loadCircleFromJson(QString &filename);
+    void loadPanelFromJson(QString &filename);
     void saveJSONSettings(QString &filename);
 };
 

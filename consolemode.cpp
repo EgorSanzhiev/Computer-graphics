@@ -5,6 +5,8 @@
 ConsoleMode::ConsoleMode() {
     controller = Controller::getInstance();
 
+    image = new QImage();
+
     connect(controller, SIGNAL(panelLoaded(int,int)), this, SLOT(setPanel(int,int)));
 }
 
@@ -25,7 +27,8 @@ int ConsoleMode::runFromConsole(int argc, char *argv[]) {
     Controller *controller = Controller::getInstance();
 
     try {
-        controller->loadJSONSettings(settingsFile);
+        controller->loadCircleFromJson(settingsFile);
+        controller->loadPanelFromJson(settingsFile);
     } catch (ISerializable::ParserException &e) {
         std::cerr << "Error in settings file" << std::endl;
 

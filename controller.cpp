@@ -41,7 +41,7 @@ void Controller::setR(int r) {
     emit circleUpdated();
 }
 
-void Controller::loadJSONSettings(QString &filename) {
+void Controller::loadCircleFromJson(QString &filename) {
     if (!filename.endsWith(".json") && !filename.isEmpty()) {
         throw ISerializable::ParserException();
     }
@@ -60,6 +60,28 @@ void Controller::loadJSONSettings(QString &filename) {
 
     QJsonValue circleSettings = settings["circle"];
 
+    circle->read(circleSettings.toObject());
+
+    emit circleUpdated();
+}
+
+void Controller::loadPanelFromJson(QString &filename) {
+    if (!filename.endsWith(".json") && !filename.isEmpty()) {
+        throw ISerializable::ParserException();
+    }
+
+    QFile settingsFile(filename);
+
+    QString jsonText;
+
+    settingsFile.open(QIODevice::ReadOnly | QIODevice::Text);
+
+    jsonText = settingsFile.readAll();
+
+    QJsonDocument document = QJsonDocument::fromJson(jsonText.toUtf8());
+
+    QJsonObject settings = document.object();
+
     QJsonValue panelSettings = settings["panel"];
 
     QJsonValue panelSize = panelSettings.toObject()["size"];
@@ -67,14 +89,6 @@ void Controller::loadJSONSettings(QString &filename) {
     QJsonValue xPanel = panelSize.toObject()["x"];
 
     QJsonValue yPanel = panelSize.toObject()["y"];
-
-    circle->read(circleSettings.toObject());
-
-    emit circleUpdated();
-
-    if (panelSettings.isNull()) {
-        return ;
-    }
 
     if (!xPanel.isDouble() || !yPanel.isDouble()) {
         throw ISerializable::ParserException();

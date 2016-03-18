@@ -62,7 +62,7 @@ void MainWindow::loadSettings() {
     QString filename = QFileDialog::getOpenFileName(this, tr("Choose file"), "/home/egorsanzhiev", tr("JSON files (*.json)"));
 
     try {
-        Controller::getInstance()->loadJSONSettings(filename);
+        Controller::getInstance()->loadCircleFromJson(filename);
     } catch (ISerializable::ParserException &e) {
         QErrorMessage *errMsg = new QErrorMessage(this);
         errMsg->showMessage(tr("Error in the settings file"));
