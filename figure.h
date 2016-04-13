@@ -20,10 +20,12 @@ private:
 
     Point screenCenter;
     Point shift;
+    bool fillMode;
     std::vector<Point> *points;
+    std::vector<std::vector<int>> *fillBorders;
     double scale;
 
-    static const int steps = 1000;
+    static const int steps = 100;
 
     int factorial(int n);
 
@@ -31,7 +33,9 @@ private:
 
     double bernstein(int n, int i, double t);
     void drawBezier(QImage *buffer, Point &start, Point &end, Point &intermediate);
+    void drawUnscaledLine(QImage *buffer, Point &start, Point &end);
     void drawLine(QImage *buffer, Point &start, Point &end);
+    void fill(QImage *buffer);
 
 signals:
     void settingsLoaded(int x, int y, int scale);

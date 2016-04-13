@@ -55,13 +55,13 @@ void MainWindow::setupDrawPanel() {
 }
 
 void MainWindow::saveFile() {
-    QString filename = QFileDialog::getSaveFileName(this, tr("Choose file"), "/home/egorsanzhiev", tr("JSON files (*.json)"));
+    QString filename = QFileDialog::getSaveFileName(this, tr("Choose file"), "", tr("JSON files (*.json)"));
 
     Controller::getInstance()->saveJSONSettings(filename);
 }
 
 void MainWindow::loadSettings() {
-    QString filename = QFileDialog::getOpenFileName(this, tr("Choose file"), "/home/egorsanzhiev", tr("JSON files (*.json)"));
+    QString filename = QFileDialog::getOpenFileName(this, tr("Choose file"), "", tr("JSON files (*.json)"));
 
     try {
         Controller::getInstance()->loadModelFromJson(filename);
