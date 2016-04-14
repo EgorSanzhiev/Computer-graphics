@@ -42,6 +42,28 @@ void Controller::setScale(int scale) {
     emit modelUpdated();
 }
 
+void Controller::setFillMode(int mode)
+{
+    if (mode == Qt::Checked) {
+        figure->setFillMode(true);
+    } else if (mode == Qt::Unchecked) {
+        figure->setFillMode(false);
+    }
+
+    emit modelUpdated();
+}
+
+void Controller::setOutlineMode(int mode)
+{
+    if (mode == Qt::Checked) {
+        figure->setOutlineMode(true);
+    } else if (mode == Qt::Unchecked) {
+        figure->setOutlineMode(false);
+    }
+
+    emit modelUpdated();
+}
+
 void Controller::startDrag() {
     cacheX = figure->getX();
     cacheY = figure->getY();

@@ -4,6 +4,7 @@
 #include <QGroupBox>
 #include <QSlider>
 #include <QSpinBox>
+#include <QCheckBox>
 #include "controlswidget.h"
 #include "controller.h"
 
@@ -25,6 +26,8 @@ private:
     ControlsWidget *xControl;
     ControlsWidget *yControl;
     ControlsWidget *scaleControl;
+    QCheckBox *fillControl;
+    QCheckBox *outLineControl;
     Controller *controller;
 };
 

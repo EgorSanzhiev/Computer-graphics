@@ -23,6 +23,8 @@ public slots:
     void setX(int x);
     void setY(int y);
     void setScale(int scale);
+    void setFillMode(int mode);
+    void setOutlineMode(int mode);
 
 public:
     class ParserException{};

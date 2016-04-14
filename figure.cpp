@@ -97,9 +97,10 @@ void Figure::drawBezier(QImage *buffer, Point &start, Point &end, Point &interme
     int prevX = startX;
     int prevY = startY;
 
-    for (double t = 0.0; t <= 1.0; t += diff) {
+    for (double t = 0.0; t < 1.0 + diff; t += diff) {
         if (t > 1.0)
             t = 1.0;
+
         int nextX = round(startX * bernstein(n, 0, t) + intermediateX * bernstein(n, 1, t) + endX * bernstein(n, 2, t));
 
         int nextY = round(startY * bernstein(n, 0, t) + intermediateY * bernstein(n, 1, t) + endY * bernstein(n, 2, t));
@@ -130,11 +131,28 @@ void Figure::drawBezier(QImage *buffer, Point &start, Point &end, Point &interme
     }
 }
 
+void Figure::putInFillVector(int x, int y, int yMax) {
+    int yIndex = (screenCenter.y - y) > 0 ? screenCenter.y - y : 0;
+    yIndex = (yIndex < yMax) ? yIndex : (yMax - 1);
+
+    std::vector<int> &borders = fillBorders->at(yIndex);
+
+    auto position = std::find(borders.begin(), borders.end(), x + screenCenter.x);
+
+    if (position == borders.end())
+        borders.push_back(x + screenCenter.x);
+    else
+        borders.erase(position);
+}
+
 void Figure::drawUnscaledLine(QImage *buffer, Point &start, Point &end) {
-    double stepsNum = (abs(start.x - end.x) > abs(start.y - end.y) ? abs(start.x - end.x) : abs(start.y - end.y)) + 1;
+    double stepsNum = (abs(start.x - end.x) > abs(start.y - end.y) ? abs(start.x - end.x) : abs(start.y - end.y));
 
     double curX = start.x;
     double curY = start.y;
+
+    int prevY = start.y;
+    int prevX = start.x;
 
     for (int i = 0; i < stepsNum; ++i) {
         curX += (double) (end.x - start.x) / stepsNum;
@@ -143,22 +161,26 @@ void Figure::drawUnscaledLine(QImage *buffer, Point &start, Point &end) {
         int nextX = round(curX);
         int nextY = round(curY);
 
-        int yIndex = (screenCenter.y - nextY) > 0 ? screenCenter.y - nextY : 0;
-        yIndex = (yIndex < buffer->height()) ? yIndex : (buffer->height() - 1);
+        if (prevY != nextY && start.y != end.y) {
+            putInFillVector(prevX, prevY, buffer->height());
+        }
 
-        std::vector<int> &borders = fillBorders->at(yIndex);
+        prevY = nextY;
+        prevX = nextX;
 
-        borders.push_back(nextX + screenCenter.x);
-
-        setPixel(buffer, nextX, nextY, 0);
+        if (outlineMode)
+            setPixel(buffer, nextX, nextY, 0);
     }
 }
 
 void Figure::drawLine(QImage *buffer, Point &start, Point &end) {
     int startX = round(scale * start.x + shift.x);
     int endX = round(scale * end.x + shift.x);
-    int startY = round(scale * (start.y < end.y ? start.y : end.y) + shift.y);
-    int endY = round(scale * (start.y > end.y ? start.y : end.y) + shift.y);
+//    int startY = round(scale * (start.y < end.y ? start.y : end.y) + shift.y);
+//    int endY = round(scale * (start.y > end.y ? start.y : end.y) + shift.y);
+
+    int startY = round(scale * start.y + shift.y);
+    int endY = round(scale * end.y + shift.y);
 
     Point newStart(startX, startY);
     Point newEnd(endX, endY);
@@ -167,6 +189,9 @@ void Figure::drawLine(QImage *buffer, Point &start, Point &end) {
 }
 
 void Figure::draw(QImage *buffer) {
+    if (!outlineMode && !fillMode)
+        return;
+
     screenCenter.x = buffer->width() / 2;
     screenCenter.y = buffer->height() / 2;
 
@@ -180,10 +205,12 @@ void Figure::draw(QImage *buffer) {
         Point nextPoint = points->at(nextIndex);
 
         if (currentPoint.onCurve && previousPoint.onCurve) {
-            if (previousPoint.x < currentPoint.x)
-                drawLine(buffer, previousPoint, currentPoint);
-            else
-                drawLine(buffer, currentPoint, previousPoint);
+//            if (previousPoint.x < currentPoint.x)
+//                drawLine(buffer, previousPoint, currentPoint);
+//            else
+//                drawLine(buffer, currentPoint, previousPoint);
+
+            drawLine(buffer, previousPoint, currentPoint);
         }
 
         if (!currentPoint.onCurve && previousPoint.onCurve && nextPoint.onCurve) {
@@ -247,14 +274,25 @@ void Figure::setY(int y) {
     shift.y = y;
 }
 
-void Figure::setScale(int scale) {
-    this->scale = scale > 0 ? (1.0 + (double) scale / 100.0) : (1.0 + (double) scale / 1000.0);
-}
-
-int Figure::getX() {
+int Figure::getX()
+{
     return shift.x;
 }
 
 int Figure::getY() {
     return shift.y;
+}
+
+void Figure::setFillMode(bool fillMode)
+{
+    this->fillMode = fillMode;
+}
+
+void Figure::setOutlineMode(bool outlineMode)
+{
+    this->outlineMode = outlineMode;
+}
+
+void Figure::setScale(int scale) {
+    this->scale = scale > 0 ? (1.0 + (double) scale / 100.0) : (1.0 + (double) scale / 1000.0);
 }

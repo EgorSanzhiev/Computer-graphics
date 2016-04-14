@@ -21,11 +21,12 @@ private:
     Point screenCenter;
     Point shift;
     bool fillMode;
+    bool outlineMode;
     std::vector<Point> *points;
     std::vector<std::vector<int>> *fillBorders;
     double scale;
 
-    static const int steps = 100;
+    static const int steps = 10;
 
     int factorial(int n);
 
@@ -36,6 +37,8 @@ private:
     void drawUnscaledLine(QImage *buffer, Point &start, Point &end);
     void drawLine(QImage *buffer, Point &start, Point &end);
     void fill(QImage *buffer);
+    void putInFillVector(int x, int y, int yMax);
+    void setPixelAvgColor(QImage *buffer, int x, int y);
 
 signals:
     void settingsLoaded(int x, int y, int scale);
@@ -50,6 +53,8 @@ public:
     void setY(int y);
     int getX();
     int getY();
+    void setFillMode(bool fillMode);
+    void setOutlineMode(bool outlineMode);
     void setScale(int scale);
 };
 
