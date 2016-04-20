@@ -13,6 +13,7 @@ private:
         int x;
         int y;
         bool onCurve;
+        Point scaleAndShift(double scale, Point shift);
     };
 
     static const int MAX_SHIFT = 1000;
@@ -26,19 +27,14 @@ private:
     std::vector<std::vector<int>> *fillBorders;
     double scale;
 
-    static const int steps = 10;
-
-    int factorial(int n);
-
     void setPixel(QImage *buffer, int x, int y, int color);
+    void setPixel(QImage *buffer, int x, int y, int red, int green, int blue);
 
-    double bernstein(int n, int i, double t);
+    double distance(double x1, double y1, double x2, double y2);
     void drawBezier(QImage *buffer, Point &start, Point &end, Point &intermediate);
-    void drawUnscaledLine(QImage *buffer, Point &start, Point &end);
     void drawLine(QImage *buffer, Point &start, Point &end);
     void fill(QImage *buffer);
     void putInFillVector(int x, int y, int yMax);
-    void setPixelAvgColor(QImage *buffer, int x, int y);
 
 signals:
     void settingsLoaded(int x, int y, int scale);

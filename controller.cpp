@@ -93,9 +93,9 @@ void Controller::loadModelFromJson(QString &filename) {
 
     QJsonObject settings = document.object();
 
-//    QJsonValue circleSettings = settings["circle"];
-
     figure->read(settings);
+
+    settingsFile.close();
 
     emit modelUpdated();
 }

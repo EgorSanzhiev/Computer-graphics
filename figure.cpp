@@ -1,5 +1,6 @@
 #include "figure.h"
 #include <math.h>
+#include <iostream>
 #include <QJsonArray>
 
 Figure::Figure() {
@@ -14,6 +15,16 @@ Figure::Point::Point(int x, int y, bool onCurve) {
     this->x = x;
     this->y = y;
     this->onCurve = onCurve;
+}
+
+Figure::Point Figure::Point::scaleAndShift(double scale, Figure::Point shift)
+{
+    Point result;
+
+    result.x = round(scale * (double) x) + shift.x;
+    result.y = round(scale * (double) y) + shift.y;
+
+    return result;
 }
 
 void Figure::read(const QJsonObject &settings) {
@@ -46,16 +57,6 @@ QJsonObject Figure::serialize() {
 
 }
 
-int Figure::factorial(int n) {
-    int fact = 1;
-
-    for (int i = 1; i <= n; ++i) {
-        fact *= i;
-    }
-
-    return fact;
-}
-
 void Figure::setPixel(QImage *buffer, int x, int y, int color) {
     uchar *backArray = buffer->bits();
 
@@ -68,67 +69,35 @@ void Figure::setPixel(QImage *buffer, int x, int y, int color) {
     memset(backArray + realY * buffer->bytesPerLine() + realX * 3 * sizeof(uchar) , color, 3 * sizeof(uchar));
 }
 
-double Figure::bernstein(int n, int i, double t) {
-    double coeff = (double) factorial(n) / (factorial(i) * factorial(n - i));
-
-    double res = coeff * pow(t, i) * pow(1 - t, n - i);
-
-    return res;
+double Figure::distance(double x1, double y1, double x2, double y2)
+{
+    double dist = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
+    return dist;
 }
 
 void Figure::drawBezier(QImage *buffer, Point &start, Point &end, Point &intermediate) {
-    double diff = 1.0 / (double) steps;
-    int n = 2;
+    double leftX = (double) (start.x + intermediate.x) / 2.0;
+    double leftY = (double) (start.y + intermediate.y) / 2.0;
+    double rightX = (double) (end.x + intermediate.x) / 2.0;
+    double rightY = (double) (end.y + intermediate.y) / 2.0;
 
-    double startX = scale * start.x + shift.x;
-    double endX = scale * end.x + shift.x;
-    double startY = scale * start.y + shift.y;
-    double endY = scale * end.y + shift.y;
-    double intermediateX = scale * intermediate.x + shift.x;
-    double intermediateY = scale * intermediate.y + shift.y;
+    double dist = distance(start.x, start.y, leftX, leftY);
 
-//    double startX = start.x;
-//    double endX = end.x;
-//    double startY = start.y;
-//    double endY = end.y;
-//    double intermediateX = intermediate.x;
-//    double intermediateY = intermediate.y;
-
-    int prevX = startX;
-    int prevY = startY;
-
-    for (double t = 0.0; t < 1.0 + diff; t += diff) {
-        if (t > 1.0)
-            t = 1.0;
-
-        int nextX = round(startX * bernstein(n, 0, t) + intermediateX * bernstein(n, 1, t) + endX * bernstein(n, 2, t));
-
-        int nextY = round(startY * bernstein(n, 0, t) + intermediateY * bernstein(n, 1, t) + endY * bernstein(n, 2, t));
-
-//        int yIndex = (screenCenter.y - nextY) > 0 ? screenCenter.y - nextY : 0;
-//        yIndex = (yIndex < buffer->height()) ? yIndex : (buffer->height() - 1);
-
-//        std::vector<int> &borders = fillBorders->at(yIndex);
-
-//        borders.push_back(nextX + screenCenter.x);
-
-//        setPixel(buffer, nextX, nextY, 0);
-
-        Point startLine, endLine;
-
-        startLine.x = nextX;
-        startLine.y = nextY;
-        endLine.x = prevX;
-        endLine.y = prevY;
-
-        if (startLine.x < endLine.x)
-            drawUnscaledLine(buffer, startLine, endLine);
-        else
-            drawUnscaledLine(buffer, endLine, startLine);
-
-        prevX = nextX;
-        prevY = nextY;
+    if (dist < 1.0) {
+        drawLine(buffer, start, intermediate);
+        drawLine(buffer, intermediate, end);
+        return;
     }
+
+    double middleX = (leftX + rightX) / 2.0;
+    double middleY = (leftY + rightY) / 2.0;
+
+    Point left(round(leftX), round(leftY));
+    Point middle(round(middleX), round(middleY));
+    Point right(round(rightX), round(rightY));
+
+    drawBezier(buffer, start, middle, left);
+    drawBezier(buffer, middle, end, right);
 }
 
 void Figure::putInFillVector(int x, int y, int yMax) {
@@ -141,18 +110,48 @@ void Figure::putInFillVector(int x, int y, int yMax) {
 
     if (position == borders.end())
         borders.push_back(x + screenCenter.x);
-    else
-        borders.erase(position);
 }
 
-void Figure::drawUnscaledLine(QImage *buffer, Point &start, Point &end) {
-    double stepsNum = (abs(start.x - end.x) > abs(start.y - end.y) ? abs(start.x - end.x) : abs(start.y - end.y));
+void Figure::setPixel(QImage *buffer, int x, int y, int red, int green, int blue)
+{
+    uchar *backBuffer = buffer->bits();
+
+    if (x < 0 || y < 0 || x > buffer->width() || y > buffer->height())
+        return;
+
+    *(backBuffer + y * buffer->bytesPerLine() + x * 3 * sizeof(uchar)) = red;
+    *(backBuffer + y * buffer->bytesPerLine() + (x * 3 + 1) * sizeof(uchar)) = green;
+    *(backBuffer + y * buffer->bytesPerLine() + (x * 3 + 2) * sizeof(uchar)) = blue;
+}
+
+void Figure::drawLine(QImage *buffer, Point &start, Point &end) {
+    int newEndY = std::max(start.y, end.y);
+    int newStartY = std::min(start.y, end.y);
+
+    if (fillMode) {
+        if (start.x == end.x) {
+            for (int y = newStartY; y < newEndY; ++y)
+                putInFillVector(start.x, y, buffer->height());
+
+        } else {
+            double a = (double) (end.y - start.y) / (end.x - start.x);
+            double b = start.y - a * start.x;
+
+            if (a != 0)
+                for (int y = newStartY; y < newEndY; ++y) {
+                    double x = (y - b) / a;
+
+                    int roundX = round(x);
+
+                    putInFillVector(roundX, y, buffer->height());
+                }
+        }
+    }
+
+    double stepsNum = std::max(abs(start.x - end.x), abs(start.y - end.y));
 
     double curX = start.x;
     double curY = start.y;
-
-    int prevY = start.y;
-    int prevX = start.x;
 
     for (int i = 0; i < stepsNum; ++i) {
         curX += (double) (end.x - start.x) / stepsNum;
@@ -161,31 +160,9 @@ void Figure::drawUnscaledLine(QImage *buffer, Point &start, Point &end) {
         int nextX = round(curX);
         int nextY = round(curY);
 
-        if (prevY != nextY && start.y != end.y) {
-            putInFillVector(prevX, prevY, buffer->height());
-        }
-
-        prevY = nextY;
-        prevX = nextX;
-
         if (outlineMode)
             setPixel(buffer, nextX, nextY, 0);
     }
-}
-
-void Figure::drawLine(QImage *buffer, Point &start, Point &end) {
-    int startX = round(scale * start.x + shift.x);
-    int endX = round(scale * end.x + shift.x);
-//    int startY = round(scale * (start.y < end.y ? start.y : end.y) + shift.y);
-//    int endY = round(scale * (start.y > end.y ? start.y : end.y) + shift.y);
-
-    int startY = round(scale * start.y + shift.y);
-    int endY = round(scale * end.y + shift.y);
-
-    Point newStart(startX, startY);
-    Point newEnd(endX, endY);
-
-    drawUnscaledLine(buffer, newStart, newEnd);
 }
 
 void Figure::draw(QImage *buffer) {
@@ -205,16 +182,16 @@ void Figure::draw(QImage *buffer) {
         Point nextPoint = points->at(nextIndex);
 
         if (currentPoint.onCurve && previousPoint.onCurve) {
-//            if (previousPoint.x < currentPoint.x)
-//                drawLine(buffer, previousPoint, currentPoint);
-//            else
-//                drawLine(buffer, currentPoint, previousPoint);
-
-            drawLine(buffer, previousPoint, currentPoint);
+            Point start = previousPoint.scaleAndShift(scale, shift);
+            Point end = currentPoint.scaleAndShift(scale, shift);
+            drawLine(buffer, start, end);
         }
 
         if (!currentPoint.onCurve && previousPoint.onCurve && nextPoint.onCurve) {
-            drawBezier(buffer, previousPoint, nextPoint, currentPoint);
+            Point start = previousPoint.scaleAndShift(scale, shift);
+            Point end = nextPoint.scaleAndShift(scale, shift);
+            Point intermediate = currentPoint.scaleAndShift(scale, shift);
+            drawBezier(buffer, start, end, intermediate);
         }
     }
 
@@ -224,7 +201,6 @@ void Figure::draw(QImage *buffer) {
 }
 
 void Figure::fill(QImage *buffer) {
-    uchar *backBuffer = buffer->bits();
     for (int i = 0; i < fillBorders->size(); ++i) {
         std::vector<int> *borders = &(fillBorders->at(i));
 
@@ -243,9 +219,8 @@ void Figure::fill(QImage *buffer) {
             if (leftBorder >= buffer->width() || rightBorder <= 0)
                 leftBorder = rightBorder;
 
-            int offset = i * buffer->bytesPerLine() + (leftBorder + 1) * 3 * sizeof(uchar);
-
-            memset(backBuffer + offset, 194, (rightBorder - 1 - leftBorder) * 3 * sizeof(uchar));
+            for (int x = leftBorder + 1; x < rightBorder; ++x)
+                setPixel(buffer, x, i, 0, 0, 255);
         }
     }
 }
