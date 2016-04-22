@@ -14,6 +14,8 @@ private:
         int y;
         bool onCurve;
         Point scaleAndShift(double scale, Point shift);
+        Point toRealCoordinates(Point center, int maxX, int maxY);
+        Point& operator=(const Point& p);
     };
 
     static const int MAX_SHIFT = 1000;
@@ -26,6 +28,7 @@ private:
     std::vector<Point> *points;
     std::vector<std::vector<int>> *fillBorders;
     double scale;
+    int integerScale;
 
     void setPixel(QImage *buffer, int x, int y, int color);
     void setPixel(QImage *buffer, int x, int y, int red, int green, int blue);
@@ -37,7 +40,7 @@ private:
     void putInFillVector(int x, int y, int yMax);
 
 signals:
-    void settingsLoaded(int x, int y, int scale);
+    void settingsLoaded(int x, int y, int scale, bool fillMode, bool outlineMode);
 
 public:
     Figure();

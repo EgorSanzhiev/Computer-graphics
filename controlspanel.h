@@ -19,7 +19,7 @@ signals:
     void scaleChanged(int r);
 
 private slots:
-    void changePositions(int x, int y, int scale);
+    void changePositions(int x, int y, int scale, bool fillMode, bool outlineMode);
     void changePositions(int x, int y);
 
 private:

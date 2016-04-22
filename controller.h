@@ -14,7 +14,7 @@ private:
     int cacheY;
 
 signals:
-    void configLoaded(int x, int y, int scale);
+    void configLoaded(int x, int y, int scale, bool fillMode, bool outlineMode);
     void modelDragged(int x, int y);
     void panelLoaded(int xPanel, int yPanel);
     void modelUpdated();

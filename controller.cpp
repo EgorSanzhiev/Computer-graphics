@@ -8,8 +8,6 @@ Controller* Controller::instance = NULL;
 
 Controller::Controller(QObject *parent) : QObject(parent) {
     figure = new Figure();
-
-    connect(figure, SIGNAL(settingsLoaded(int,int,int)), this, SIGNAL(configLoaded(int,int,int)));
 }
 
 Controller* Controller::getInstance() {
@@ -92,6 +90,12 @@ void Controller::loadModelFromJson(QString &filename) {
     QJsonDocument document = QJsonDocument::fromJson(jsonText.toUtf8());
 
     QJsonObject settings = document.object();
+
+    delete figure;
+
+    figure = new Figure();
+
+    connect(figure, SIGNAL(settingsLoaded(int,int,int, bool, bool)), this, SIGNAL(configLoaded(int,int,int, bool, bool)));
 
     figure->read(settings);
 
