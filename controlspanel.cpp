@@ -2,20 +2,20 @@
 #include "controlspanel.h"
 
 ControlsPanel::ControlsPanel(QWidget *parent) : QGroupBox(parent) {
-    xControl = new ControlsWidget("X", -1000, 1000, this);
-    yControl = new ControlsWidget("Y", -1000, 1000, this);
+    xControl = new ControlsWidget("X", -360, 360, this);
+    yControl = new ControlsWidget("Y", -360, 360, this);
     scaleControl = new ControlsWidget("Scale", -1000, 1000, this);
+    filteringControl = new QComboBox();
 
-    fillControl = new QCheckBox("Fill");
-    outLineControl = new QCheckBox("Outline");
+    filteringControl->addItem("nearest");
+    filteringControl->addItem("bilinear");
 
     QVBoxLayout *layout = new QVBoxLayout();
 
     layout->addWidget(xControl);
     layout->addWidget(yControl);
     layout->addWidget(scaleControl);
-    layout->addWidget(fillControl);
-    layout->addWidget(outLineControl);
+    layout->addWidget(filteringControl);
 
     setLayout(layout);
 
@@ -24,17 +24,16 @@ ControlsPanel::ControlsPanel(QWidget *parent) : QGroupBox(parent) {
     connect(xControl, SIGNAL(valueChanged(int)), controller, SLOT(setX(int)));
     connect(yControl, SIGNAL(valueChanged(int)), controller, SLOT(setY(int)));
     connect(scaleControl, SIGNAL(valueChanged(int)), controller, SLOT(setScale(int)));
+    connect(filteringControl, SIGNAL(activated(QString)), controller, SLOT(setFilteringType(QString)));
 
-    connect(controller, SIGNAL(configLoaded(int,int,int, bool, bool)), this, SLOT(changePositions(int,int,int, bool, bool)));
+    connect(controller, SIGNAL(configLoaded(int,int,int)), this, SLOT(changePositions(int,int,int)));
     connect(controller, SIGNAL(modelDragged(int,int)), this, SLOT(changePositions(int,int)));
 }
 
-void ControlsPanel::changePositions(int x1, int y1, int scale, bool fillMode, bool outlineMode) {
+void ControlsPanel::changePositions(int x1, int y1, int scale) {
     xControl->setValue(x1);
     yControl->setValue(y1);
     scaleControl->setValue(scale);
-    fillControl->setChecked(fillMode);
-    outLineControl->setChecked(outlineMode);
 }
 
 void ControlsPanel::changePositions(int x, int y) {

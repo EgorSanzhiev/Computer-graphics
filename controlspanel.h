@@ -5,6 +5,7 @@
 #include <QSlider>
 #include <QSpinBox>
 #include <QCheckBox>
+#include <QComboBox>
 #include "controlswidget.h"
 #include "controller.h"
 
@@ -19,16 +20,15 @@ signals:
     void scaleChanged(int r);
 
 private slots:
-    void changePositions(int x, int y, int scale, bool fillMode, bool outlineMode);
+    void changePositions(int x, int y, int scale);
     void changePositions(int x, int y);
 
 private:
     ControlsWidget *xControl;
     ControlsWidget *yControl;
     ControlsWidget *scaleControl;
-    QCheckBox *fillControl;
-    QCheckBox *outLineControl;
     Controller *controller;
+    QComboBox *filteringControl;
 };
 
 #endif // CONTROLSPANEL

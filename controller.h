@@ -14,7 +14,7 @@ private:
     int cacheY;
 
 signals:
-    void configLoaded(int x, int y, int scale, bool fillMode, bool outlineMode);
+    void configLoaded(int x, int y, int scale);
     void modelDragged(int x, int y);
     void panelLoaded(int xPanel, int yPanel);
     void modelUpdated();
@@ -23,6 +23,7 @@ public slots:
     void setX(int x);
     void setY(int y);
     void setScale(int scale);
+    void setFilteringType(QString type);
 
 public:
     class ParserException{};

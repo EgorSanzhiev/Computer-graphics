@@ -29,13 +29,23 @@ void Controller::setX(int x) {
 }
 
 void Controller::setY(int y) {
-    sphere->setY(-y);
+    sphere->setY(y);
 
     emit modelUpdated();
 }
 
 void Controller::setScale(int scale) {
-//    sphere->setScale(scale);
+    sphere->setScale(scale);
+
+    emit modelUpdated();
+}
+
+void Controller::setFilteringType(QString type)
+{
+    if (type == "nearest")
+        sphere->applyNearestFiltering();
+    else if (type == "bilinear")
+        sphere->applyBilinearFiltering();
 
     emit modelUpdated();
 }
@@ -46,40 +56,43 @@ void Controller::startDrag() {
 }
 
 void Controller::drag(int x, int y) {
+    if (abs(x + cacheX) > 360 || abs(y + cacheY) > 360)
+        return;
+
     setX(x + cacheX);
-    setY(-y + cacheY);
+    setY(y + cacheY);
 
     emit modelDragged(sphere->getX(), sphere->getY());
 }
 
 void Controller::loadModelFromJson(QString &filename) {
-//    if (!filename.endsWith(".json") && !filename.isEmpty()) {
-//        throw ISerializable::ParserException();
-//    }
+    if (!filename.endsWith(".json") && !filename.isEmpty()) {
+        throw ISerializable::ParserException();
+    }
 
-//    QFile settingsFile(filename);
+    QFile settingsFile(filename);
 
-//    QString jsonText;
+    QString jsonText;
 
-//    settingsFile.open(QIODevice::ReadOnly | QIODevice::Text);
+    settingsFile.open(QIODevice::ReadOnly | QIODevice::Text);
 
-//    jsonText = settingsFile.readAll();
+    jsonText = settingsFile.readAll();
 
-//    QJsonDocument document = QJsonDocument::fromJson(jsonText.toUtf8());
+    QJsonDocument document = QJsonDocument::fromJson(jsonText.toUtf8());
 
-//    QJsonObject settings = document.object();
+    QJsonObject settings = document.object();
 
-//    delete figure;
+    QJsonObject sphereSettings = settings["sphere"].toObject();
 
-//    figure = new Figure();
+    delete sphere;
 
-//    connect(figure, SIGNAL(settingsLoaded(int,int,int, bool, bool)), this, SIGNAL(configLoaded(int,int,int, bool, bool)));
+    sphere = new Sphere();
 
-//    sphere->read(settings);
+    sphere->read(sphereSettings);
 
-//    settingsFile.close();
+    settingsFile.close();
 
-//    emit modelUpdated();
+    emit modelUpdated();
 }
 
 void Controller::loadPanelFromJson(QString &filename) {
@@ -137,4 +150,6 @@ void Controller::saveJSONSettings(QString &filename) {
 void Controller::setImageName(QString &filename)
 {
     sphere->setImageFilename(filename);
+
+    emit modelUpdated();
 }
